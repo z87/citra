@@ -219,6 +219,8 @@ struct CachedSurface : SurfaceParams, std::enable_shared_from_this<CachedSurface
 private:
     RasterizerCacheOpenGL& owner;
     std::list<std::weak_ptr<SurfaceWatcher>> watchers;
+    std::array<OGLBuffer, 2> pixel_buffers;
+    u8 pbo_index{0};
 };
 
 struct CachedTextureCube {

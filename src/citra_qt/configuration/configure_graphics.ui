@@ -121,6 +121,26 @@
         </property>
        </widget>
       </item>
+      <item>
+       <widget class="QCheckBox" name="toggle_buffer_depth">
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Perform download of depth data from the host GPU in background, resulting in one frame delay.&lt;/p&gt;&lt;p&gt;Enabling this option might help with performance in certain cases, but may also result in display inaccuracies.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="text">
+         <string>Use buffered read for depth data</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="toggle_buffer_textures">
+        <property name="toolTip">
+         <string>Same as above with regard to textures.</string>
+        </property>
+        <property name="text">
+         <string>Use buffered read for texture data</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>

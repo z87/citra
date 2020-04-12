@@ -80,6 +80,8 @@ void LogSettings() {
     LogSetting("Renderer_UseHwShader", Settings::values.use_hw_shader);
     LogSetting("Renderer_ShadersAccurateMul", Settings::values.shaders_accurate_mul);
     LogSetting("Renderer_UseShaderJit", Settings::values.use_shader_jit);
+    LogSetting("Renderer_UseBufferDepth", Settings::values.buffer_dl_depth);
+    LogSetting("Renderer_UseBufferTextures", Settings::values.buffer_dl_textures);
     LogSetting("Renderer_UseResolutionFactor", Settings::values.resolution_factor);
     LogSetting("Renderer_UseFrameLimit", Settings::values.use_frame_limit);
     LogSetting("Renderer_FrameLimit", Settings::values.frame_limit);

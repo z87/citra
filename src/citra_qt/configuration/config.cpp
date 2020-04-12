@@ -443,6 +443,10 @@ void Config::ReadRendererValues() {
         ReadSetting(QStringLiteral("shaders_accurate_mul"), false).toBool();
     Settings::values.use_shader_jit = ReadSetting(QStringLiteral("use_shader_jit"), true).toBool();
     Settings::values.use_vsync_new = ReadSetting(QStringLiteral("use_vsync_new"), true).toBool();
+    Settings::values.buffer_dl_depth =
+        ReadSetting(QStringLiteral("buffer_dl_depth"), false).toBool();
+    Settings::values.buffer_dl_textures =
+        ReadSetting(QStringLiteral("buffer_dl_textures"), false).toBool();
     Settings::values.resolution_factor =
         static_cast<u16>(ReadSetting(QStringLiteral("resolution_factor"), 1).toInt());
     Settings::values.use_frame_limit =
@@ -928,6 +932,8 @@ void Config::SaveRendererValues() {
                  false);
     WriteSetting(QStringLiteral("use_shader_jit"), Settings::values.use_shader_jit, true);
     WriteSetting(QStringLiteral("use_vsync_new"), Settings::values.use_vsync_new, true);
+    WriteSetting(QStringLiteral("buffer_dl_depth"), Settings::values.buffer_dl_depth, false);
+    WriteSetting(QStringLiteral("buffer_dl_textures"), Settings::values.buffer_dl_textures, false);
     WriteSetting(QStringLiteral("resolution_factor"), Settings::values.resolution_factor, 1);
     WriteSetting(QStringLiteral("use_frame_limit"), Settings::values.use_frame_limit, true);
     WriteSetting(QStringLiteral("frame_limit"), Settings::values.frame_limit, 100);

@@ -121,6 +121,10 @@ void Config::ReadValues() {
     Settings::values.shaders_accurate_mul =
         sdl2_config->GetBoolean("Renderer", "shaders_accurate_mul", false);
     Settings::values.use_shader_jit = sdl2_config->GetBoolean("Renderer", "use_shader_jit", true);
+    Settings::values.buffer_dl_depth =
+        sdl2_config->GetBoolean("Renderer", "buffer_dl_depth", false);
+    Settings::values.buffer_dl_textures =
+        sdl2_config->GetBoolean("Renderer", "buffer_dl_textures", false);
     Settings::values.resolution_factor =
         static_cast<u16>(sdl2_config->GetInteger("Renderer", "resolution_factor", 1));
     Settings::values.use_frame_limit = sdl2_config->GetBoolean("Renderer", "use_frame_limit", true);

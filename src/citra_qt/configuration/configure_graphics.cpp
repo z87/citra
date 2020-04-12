@@ -49,6 +49,8 @@ void ConfigureGraphics::SetConfiguration() {
     ui->toggle_accurate_mul->setChecked(Settings::values.shaders_accurate_mul);
     ui->toggle_shader_jit->setChecked(Settings::values.use_shader_jit);
     ui->toggle_vsync_new->setChecked(Settings::values.use_vsync_new);
+    ui->toggle_buffer_depth->setChecked(Settings::values.buffer_dl_depth);
+    ui->toggle_buffer_textures->setChecked(Settings::values.buffer_dl_textures);
 }
 
 void ConfigureGraphics::ApplyConfiguration() {
@@ -57,6 +59,8 @@ void ConfigureGraphics::ApplyConfiguration() {
     Settings::values.shaders_accurate_mul = ui->toggle_accurate_mul->isChecked();
     Settings::values.use_shader_jit = ui->toggle_shader_jit->isChecked();
     Settings::values.use_vsync_new = ui->toggle_vsync_new->isChecked();
+    Settings::values.buffer_dl_depth = ui->toggle_buffer_depth->isChecked();
+    Settings::values.buffer_dl_textures = ui->toggle_buffer_textures->isChecked();
 }
 
 void ConfigureGraphics::RetranslateUI() {

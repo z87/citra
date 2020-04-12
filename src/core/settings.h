@@ -149,6 +149,8 @@ struct Values {
     bool use_frame_limit;
     u16 frame_limit;
     std::string texture_filter_name;
+    bool buffer_dl_depth;
+    bool buffer_dl_textures;
 
     LayoutOption layout_option;
     bool swap_screen;

@@ -123,6 +123,15 @@ use_shader_jit =
 # 0: Off, 1 (default): On
 use_vsync_new =
 
+# Perform download of depth data from the host GPU in background, resulting in one frame delay.
+# Enabling this option might help with performance in certain cases, but may also result in display inaccuracies.
+# 0 (default): Off, 1: On
+buffer_dl_depth =
+
+# Same as above with regard to textures.
+# 0 (default): Off, 1: On
+buffer_dl_textures =
+
 # Reduce stuttering by storing and loading generated shaders to disk
 # 0: Off, 1 (default. On)
 use_disk_shader_cache =

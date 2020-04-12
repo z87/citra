@@ -902,6 +902,20 @@ void CachedSurface::DownloadGLTexture(const Common::Rectangle<u32>& rect, GLuint
     std::size_t buffer_offset =
         (rect.bottom * stride + rect.left) * GetGLBytesPerPixel(pixel_format);
 
+    const bool use_pbo =
+        !GLES && (Settings::values.buffer_dl_depth &&
+                      (type == SurfaceType::Depth || type == SurfaceType::DepthStencil) ||
+                  Settings::values.buffer_dl_textures && type == SurfaceType::Texture);
+    if (use_pbo && !pixel_buffers[0].handle) {
+        const GLsizeiptr pbo_size = width * height * GetGLBytesPerPixel(pixel_format);
+        for (auto& buffer : pixel_buffers) {
+            buffer.Create();
+            glBindBuffer(GL_PIXEL_PACK_BUFFER, buffer.handle);
+            glBufferData(GL_PIXEL_PACK_BUFFER, pbo_size, nullptr, GL_STREAM_READ);
+        }
+        glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
+    }
+
     // If not 1x scale, blit scaled texture to a new 1x texture and use that to flush
     if (res_scale != 1) {
         auto scaled_rect = rect;
@@ -926,8 +940,12 @@ void CachedSurface::DownloadGLTexture(const Common::Rectangle<u32>& rect, GLuint
             GetTexImageOES(GL_TEXTURE_2D, 0, tuple.format, tuple.type, rect.GetHeight(),
                            rect.GetWidth(), 0, &gl_buffer[buffer_offset],
                            gl_buffer.size() - buffer_offset);
+        } else if (use_pbo) {
+            glBindBuffer(GL_PIXEL_PACK_BUFFER, pixel_buffers[pbo_index].handle);
+            glGetTexImage(GL_TEXTURE_2D, 0, tuple.format, tuple.type, nullptr);
         } else {
-            glGetTexImage(GL_TEXTURE_2D, 0, tuple.format, tuple.type, &gl_buffer[buffer_offset]);
+            glGetTexImage(GL_TEXTURE_2D, 0, tuple.format, tuple.type,
+                            &gl_buffer[buffer_offset]);
         }
     } else {
         state.ResetTexture(texture.handle);
@@ -949,9 +967,27 @@ void CachedSurface::DownloadGLTexture(const Common::Rectangle<u32>& rect, GLuint
             glFramebufferTexture2D(GL_READ_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D,
                                    texture.handle, 0);
         }
-        glReadPixels(static_cast<GLint>(rect.left), static_cast<GLint>(rect.bottom),
-                     static_cast<GLsizei>(rect.GetWidth()), static_cast<GLsizei>(rect.GetHeight()),
-                     tuple.format, tuple.type, &gl_buffer[buffer_offset]);
+
+        if (use_pbo) {
+            glBindBuffer(GL_PIXEL_PACK_BUFFER, pixel_buffers[pbo_index].handle);
+            glReadPixels(static_cast<GLint>(rect.left), static_cast<GLint>(rect.bottom),
+                         static_cast<GLsizei>(rect.GetWidth()),
+                         static_cast<GLsizei>(rect.GetHeight()), tuple.format, tuple.type, nullptr);
+        } else {
+            glReadPixels(static_cast<GLint>(rect.left), static_cast<GLint>(rect.bottom),
+                         static_cast<GLsizei>(rect.GetWidth()),
+                         static_cast<GLsizei>(rect.GetHeight()), tuple.format, tuple.type,
+                         &gl_buffer[buffer_offset]);
+        }
+    }
+
+    if (use_pbo) {
+        pbo_index = (pbo_index + 1) % 2;
+        glBindBuffer(GL_PIXEL_PACK_BUFFER, pixel_buffers[pbo_index].handle);
+        GLubyte* pbo_data = static_cast<GLubyte*>(glMapBuffer(GL_PIXEL_PACK_BUFFER, GL_READ_ONLY));
+        std::copy(pbo_data, pbo_data + gl_buffer.size() - buffer_offset, &gl_buffer[buffer_offset]);
+        glUnmapBuffer(GL_PIXEL_PACK_BUFFER);
+        glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
     }
 
     glPixelStorei(GL_PACK_ROW_LENGTH, 0);
